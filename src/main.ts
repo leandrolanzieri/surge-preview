@@ -17,6 +17,8 @@ async function main() {
   const failOnError = !!(
     core.getInput('failOnError') || process.env.FAIL_ON__ERROR
   );
+  const allowForkedComments =
+    core.getInput('allowForkedComments')?.toString().toLowerCase() !== 'true';
   failOnErrorGlobal = failOnError;
   core.debug(
     `failOnErrorGlobal: ${typeof failOnErrorGlobal} + ${failOnErrorGlobal.toString()}`
@@ -57,7 +59,7 @@ async function main() {
 
   const commentIfNotForkedRepo = (message: string) => {
     // if it is forked repo, don't comment
-    if (fromForkedRepo) {
+    if (fromForkedRepo && !allowForkedComments) {
       return;
     }
     comment({
